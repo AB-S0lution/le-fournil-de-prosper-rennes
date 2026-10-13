@@ -1,6 +1,6 @@
 import { esc } from '../core/dom.ts'
 import { icon } from '../core/icons.ts'
-import { gsap, Flip, motionOn } from '../core/motion.ts'
+import { gsap, Flip, motionOn, isLight } from '../core/motion.ts'
 import { pageHero, prodCard, route, sectionHead } from '../core/ui.ts'
 import { products, categoryLabels, tagLabels } from '../data/products.ts'
 import type { Category, Tag } from '../data/products.ts'
@@ -47,7 +47,7 @@ export function init(main: HTMLElement): void {
     gsap.to(ink, { x: t.offsetLeft, y: t.offsetTop, width: t.offsetWidth, height: t.offsetHeight, duration: motionOn() ? 0.45 : 0, ease: 'expo.out' })
   }
   const apply = (): void => {
-    const state = motionOn() ? Flip.getState(items) : null
+    const state = motionOn() && !isLight() ? Flip.getState(items) : null
     let n = 0
     items.forEach((el) => {
       const p = byId.get(el.dataset.prod!)!

@@ -1,6 +1,8 @@
+import { photo, photoFig, photoFor } from '../data/photos.ts'
+import { cardMedia } from '../core/ui.ts'
 import { esc } from '../core/dom.ts'
 import { icon } from '../core/icons.ts'
-import { art } from '../core/art.ts'
+
 import { pageHero, sectionHead, mockTag, realTag, datePicker, slipItems, slipText, weekdayName, route } from '../core/ui.ts'
 import { orderOffers } from '../data/events.ts'
 import { shop, formatLongDate } from '../data/shop.ts'
@@ -11,7 +13,7 @@ export function render(): string {
   return `${pageHero({ crumb: [{ label: 'Commandes et événements' }], kicker: 'Sur commande', title: 'Un gâteau pour la fête', lede: 'Anniversaires, number cakes, plateaux de mini-viennoiseries, pièces de mariage. Mini-viennoiseries : -10 % dès 20 pièces. Commande par téléphone, e-mail ou message.', art: 'number',
     extra: `<div class="hero__cta"><a class="btn" href="tel:${shop.phoneTel}">${icon('phone')}${shop.phone}</a><a class="btn btn--ghost" href="#devis">Préparer ma demande</a></div>` })}
   <section class="section" style="padding-top:0"><div class="wrap">${sectionHead('Les formules', `${orderOffers.length} façons de commander`, 'Délais, tailles et prix sont des exemples (à confirmer avec le fournil).')}
-    <div class="grid-auto">${orderOffers.map((o) => `<article class="card" data-reveal><div style="background:var(--band);border-radius:10px;padding:12px 26%">${art(o.illustration === 'galette' ? 'galette' : o.illustration === 'sapin' ? 'sapin' : o.illustration === 'buche' ? 'buche' : o.illustration === 'surprise' ? 'surprise' : o.illustration === 'tray' ? 'tray' : o.illustration === 'minis' ? 'minis' : o.illustration === 'wedding' ? 'wedding' : o.illustration === 'number' ? 'number' : 'cake')}</div>
+    <div class="grid-auto">${orderOffers.map((o) => `<article class="card" data-reveal>${cardMedia(photoFor(o.illustration), o.illustration)}
       <p class="label" style="margin-top:12px">${esc(catLabel[o.category])}</p><h3 class="h3">${esc(o.title)}</h3><p class="muted" style="margin:6px 0 10px">${esc(o.description)}</p>
       <p style="margin:0;font-size:.92rem">${esc(o.sizes.join(' · '))}</p><p class="muted" style="margin:4px 0 10px;font-size:.92rem">Délai : ${esc(o.leadTime)}</p>
       ${o.real ? realTag('Offre réelle') : mockTag('Exemple')} ${o.note ? `<p class="note-demo" style="margin-top:10px">${esc(o.note)}</p>` : ''}</article>`).join('')}</div></div></section>
@@ -30,7 +32,7 @@ export function render(): string {
       <p class="muted" style="margin:0;font-size:.88rem">Aucun envoi automatique : le bouton ouvre votre messagerie avec le message prêt.</p>
     </form>
   </div></section>
-  <section class="section"><div class="wrap cols-2"><div><h2 class="h2">Comment commander</h2></div>
+  <section class="section"><div class="wrap cols-2"><div><h2 class="h2">Comment commander</h2>${photoFig(photo('gateau-anniversaire'), 'photo-tile photo-tile--43')}</div>
     <ul class="ticklist"><li>${icon('phone')}<span>Par téléphone : <a href="tel:${shop.phoneTel}">${shop.phone}</a></span></li><li>${icon('envelope')}<span>Par e-mail : <a href="mailto:${shop.email}">${shop.email}</a></span></li><li>${icon('instagram')}<span>Par message sur <a href="${shop.instagram}" rel="noopener" target="_blank">Instagram</a></span></li><li>${icon('storefront')}<span>Retrait en boutique, au ${shop.street}.</span></li><li>${icon('users')}<span>-10 % dès 20 mini-viennoiseries, pour les entreprises, séminaires et pots de départ.</span></li></ul></div></div></section>
   <p class="wrap" style="padding-bottom:40px"><a class="link-arrow" href="${route('fetes')}">La carte des fêtes${icon('arrowRight')}</a></p>`
 }

@@ -751,3 +751,105 @@ dialog.lightbox::backdrop { background: rgba(34, 35, 47, 0.8); }
 .photo-cap a { display: inline-block; padding: 12px 4px; margin: -12px -4px; }
 .link-arrow { position: relative; } .link-arrow::before { content: ""; position: absolute; inset: -9px -4px; }
 @media (max-width: 480px) { .photo-cap { left: 8px; bottom: 8px; letter-spacing: 0.03em; padding: 3px 7px; line-height: 1.25; max-width: calc(100% - 16px); } }
+
+/* ==================================================================
+   Media frames added with the photo pass (all Unsplash, "Photo d'illustration")
+   ================================================================== */
+.card-media { position: relative; margin: 0 0 16px; aspect-ratio: 3 / 2; border-radius: 10px; background: var(--band); }
+.card-media > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.card-media .photo-cap--over { left: 8px; bottom: 8px; }
+.card-media__badge { position: absolute; right: 10px; bottom: -18px; width: 60px; padding: 6px; border-radius: 50%; background: var(--band); box-shadow: var(--shadow); z-index: 1; }
+.card-media--prod { margin: 0; border-radius: 0; aspect-ratio: 16 / 10; }
+.card-media--prod > img { border-radius: 0; }
+.card-media--prod .card-media__badge { bottom: -14px; width: 56px; }
+.prod__board { position: relative; z-index: 0; }
+.prod__body { padding-top: 22px; }
+.photo-tile--43 { aspect-ratio: 4 / 3; }
+.photo-tile--43 img, .photo-tile--month img { height: 100%; }
+.photo-tile--month { aspect-ratio: 4 / 3; margin-top: 16px; max-width: 320px; }
+.photo-slim { position: relative; margin: 0; border-radius: var(--r-card); overflow: hidden; background: var(--band); aspect-ratio: 16 / 5; box-shadow: var(--shadow); }
+.photo-slim img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.photo-band--cover { aspect-ratio: 3 / 2; margin-bottom: 8px; }
+.photo-band--drawer { aspect-ratio: 3 / 2; margin: 0; }
+.photo-band--drawer + .drawer__art { padding: 10px 34%; }
+.sheet__photo { aspect-ratio: 16 / 9; overflow: hidden; background: var(--band); }
+.sheet__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ind-media { position: relative; max-width: 520px; }
+.ind-media__medal { position: absolute; right: -12px; bottom: -28px; width: clamp(110px, 28%, 170px); padding: 10%; box-shadow: var(--shadow); }
+@media (max-width: 699px) {
+  .photo-slim { aspect-ratio: 16 / 9; }
+  .photo-band { aspect-ratio: 4 / 3; }
+  .ind-media__medal { right: 8px; }
+}
+
+/* ==================================================================
+   Phone + tablet pass
+   ================================================================== */
+html { scroll-padding-top: calc(var(--header-h) + 16px); }
+body { overflow-wrap: break-word; }
+.wrap { padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)); }
+.fascia { padding-top: env(safe-area-inset-top, 0px); }
+.menu { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.menu__top { padding-top: env(safe-area-inset-top, 0px); }
+/* the floating order slip must never sit on the last lines of the footer */
+.footer__bottom { padding-bottom: calc(40px + 72px + env(safe-area-inset-bottom, 0px)); }
+.slip-btn { right: max(16px, env(safe-area-inset-right, 0px)); }
+/* full-height scenes: svh so the mobile URL bar never crops or jumps them */
+.hero { min-height: calc(100svh - var(--header-h) - 36px); }
+.pan__sticky { min-height: 100svh; }
+.flankie__stage { min-height: 100svh; }
+dialog.drawer { height: 100dvh; padding-bottom: env(safe-area-inset-bottom, 0px); }
+/* tap targets >= 44px */
+.chip, .btn--sm, .cal__d, .tab { min-height: 44px; }
+.crumbs a { min-height: 44px; display: inline-flex; align-items: center; padding-block: 0; margin-block: -12px; }
+.carnet__tab { min-height: 44px; }
+/* small text floor */
+.pan-card__items figure, .tear__prods figure { font-size: 0.82rem; }
+.label { font-size: max(0.78rem, 12.5px); }
+/* tablets: footer in two columns rather than one long stack */
+@media (min-width: 600px) and (max-width: 899px) { .footer__top { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* tablets portrait: three month sheets / product columns breathe */
+@media (min-width: 700px) and (max-width: 1023px) {
+  .photo-trio { grid-template-columns: repeat(3, 1fr); }
+  .photo-trio .photo-tile { aspect-ratio: 3 / 4; }
+}
+/* horizontal scrollers: snap + a visible swipe hint */
+.tabs { scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
+.tab { scroll-snap-align: start; }
+.week { overscroll-behavior-x: contain; }
+.swipe-hint { display: none; font-family: var(--label); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.8rem; color: var(--muted); margin: 0 0 10px; }
+.swipe-hint span { display: inline-block; }
+@media (prefers-reduced-motion: no-preference) { .swipe-hint span { animation: nudge 1.6s var(--ease-in-out) infinite; } }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+.no-pin .swipe-hint { display: block; }
+/* the day pan, unpinned: a native swipe rail instead of a long stack */
+.no-pin .pan__track { width: auto; flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding-bottom: 16px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+.no-pin .pan-card { width: min(84vw, 460px); scroll-snap-align: center; }
+.no-pin .pan__clock { display: block; position: static; margin-top: 8px; }
+html.rm .pan__track { flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; }
+html.rm .pan-card { width: min(84vw, 460px); scroll-snap-align: center; }
+@media (min-width: 1100px) { .swipe-hint--week { display: none !important; } }
+.swipe-hint--rail, .swipe-hint--week { display: block; }
+@media (hover: hover) and (pointer: fine) and (min-width: 1100px) { .swipe-hint--rail { display: none; } }
+/* phones */
+@media (max-width: 480px) {
+  .btn { white-space: normal; text-align: left; }
+  .display, .h2 { hyphens: auto; -webkit-hyphens: auto; }
+  .flankie__stamp .stamp { width: 88px; height: 88px; font-size: 0.65rem; }
+  .flankie__stamp .stamp strong { font-size: 1.4rem; }
+  .hours th, .hours td { padding: 12px 8px; }
+  .facts dd { overflow-wrap: anywhere; }
+  .day { min-height: 300px; }
+}
+/* lighter rendering on touch / small screens: no blend-mode grain, no extra shadows on moving tiles */
+@media (max-width: 899px), (pointer: coarse) {
+  body::after { mix-blend-mode: normal; opacity: 0.035; }
+  .photo-mosaic .photo-tile:nth-child(n) { transform: none; }
+  .js-motion.js-ready [data-reveal] { transform: translateY(16px); }
+  .js-motion.js-ready [data-reveal="left"] { transform: translateX(-16px); }
+}
+/* off-screen CSS loops pause */
+.awning.is-offscreen .awning__track { animation-play-state: paused; }
+/* fail-safe: everything visible if a script error or stall happened */
+html.reveal-all [data-reveal] { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+html.reveal-all [data-split] { visibility: visible !important; }

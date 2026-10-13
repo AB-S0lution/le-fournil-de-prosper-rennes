@@ -1,3 +1,4 @@
+import { photo, photoFig } from '../data/photos.ts'
 import { icon } from '../core/icons.ts'
 import { pageHero, sectionHead } from '../core/ui.ts'
 import { shop, weeklyHours, dayNames, fmtTime } from '../data/shop.ts'
@@ -14,7 +15,7 @@ export function render(): string {
       <div class="field"><label for="c-msg">Votre message</label><textarea id="c-msg" name="msg"></textarea><span class="err" data-err="msg" role="alert"></span></div>
       <button class="btn" type="submit">Ouvrir ma messagerie${icon('envelope')}</button><p class="muted" style="margin:0;font-size:.88rem">Rien n’est envoyé par ce site : le bouton ouvre votre messagerie.</p></form>
   </div></section>
-  <section class="section section--band"><div class="wrap">${sectionHead('Passer nous voir', 'Ici, au coin de la rue')}<p>${shop.transport.metro}.</p></div></section>`
+  <section class="section section--band"><div class="wrap cols-2"><div>${sectionHead('Passer nous voir', 'Ici, au coin de la rue')}<p>${shop.transport.metro}.</p></div>${photoFig(photo('boutique-soir'), 'photo-tile photo-tile--43')}</div></section>`
 }
 export function init(main: HTMLElement): void {
   const f = main.querySelector<HTMLFormElement>('[data-contact]')!

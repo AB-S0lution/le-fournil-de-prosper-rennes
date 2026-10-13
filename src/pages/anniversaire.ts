@@ -1,3 +1,4 @@
+import { photo, photoFig } from '../data/photos.ts'
 import { esc } from '../core/dom.ts'
 import { icon } from '../core/icons.ts'
 import { pageHero, sectionHead, realTag, route } from '../core/ui.ts'
@@ -16,6 +17,7 @@ export function render(): string {
     <div class="ledger" data-ledger>${years.map((r) => `<div class="ledger__row" data-reveal><div class="ledger__year tnum">${r.y}</div><h2 class="h3">${esc(r.t)}</h2><p class="ledger__text">${esc(r.d)}</p>${realTag('Annoncé par le fournil')}</div>`).join('')}</div>
     <aside class="saviez" data-reveal><p class="label">Comment marche l’urne</p><ol class="ticklist" style="list-style:none;padding:0;margin-top:12px"><li>${icon('bag')}<span>On achète son produit préféré.</span></li><li>${icon('receipt')}<span>On reçoit un papier.</span></li><li>${icon('ticket')}<span>On le glisse dans l’urne en boutique.</span></li><li>${icon('sparkle')}<span>Tirage le jour anniversaire.</span></li></ol></aside>
   </div></section>
+  <section class="section" style="padding-top:0" aria-label="Photos d’ambiance"><div class="wrap photo-trio">${['gateau-anniversaire', 'croissants-tas', 'plateau-viennoiseries'].map((s) => photoFig(photo(s), 'photo-tile')).join('')}</div></section>
   <section class="section section--band"><div class="wrap">${sectionHead('La suite', 'Le prochain 1er juillet', 'La date reste la même chaque année.')}<a class="btn btn--store" href="${route('histoire')}">Notre histoire${icon('arrowRight')}</a></div></section>`
 }
 export function init(main: HTMLElement): void {

@@ -2,7 +2,7 @@ import { esc } from '../core/dom.ts'
 import { icon } from '../core/icons.ts'
 import { gsap, motionOn, splitReveal, mm } from '../core/motion.ts'
 import { nowState, pillHTML, todayIso } from '../core/state.ts'
-import { route, shelfItem, weekStrip, dayPan, bindPan, flankieStage, bindFlankie, seasonRail, tickets, sectionHead, ctaLink, accordion, mockTag } from '../core/ui.ts'
+import { route, shelfItem, weekStrip, dayPan, bindPan, flankieStage, bindFlankie, seasonRail, tickets, sectionHead, ctaLink, accordion, mockTag, cardMedia } from '../core/ui.ts'
 import { slotCopy, mondayPizza, sundayCopy, congesCopy, wednesdayCopy } from '../data/dayMoments.ts'
 import type { SlotCopy } from '../data/dayMoments.ts'
 import { currentFlankie } from '../data/flankies.ts'
@@ -11,7 +11,7 @@ import { stats } from '../data/stats.ts'
 import { faq } from '../data/faq.ts'
 import { orderOffers } from '../data/events.ts'
 import { art } from '../core/art.ts'
-import { photo, photoImg } from '../data/photos.ts'
+import { photo, photoImg, photoFor } from '../data/photos.ts'
 
 function copyFor(): SlotCopy {
   const s = nowState()
@@ -65,7 +65,7 @@ export function render(): string {
   ${flankieStage(currentFlankie)}
 
   <section class="section" aria-labelledby="ind-title"><div class="wrap cols-2">
-    <div class="medal" style="max-width:380px" data-reveal>${art('crepes', 'Une pile de crêpes maison')}</div>
+    <div class="ind-media"><figure class="photo-tile photo-tile--43" data-reveal="clip">${photoImg(photo('crepes'))}<figcaption class="photo-cap">Photo d’illustration</figcaption></figure><div class="medal ind-media__medal" data-reveal>${art('crepes', 'Une pile de crêpes maison')}</div></div>
     <div class="stack" style="--stack:1rem"><p class="label" data-reveal>Les indispensables, n°1</p><h2 class="h2" id="ind-title" data-split>Nos crêpes maison</h2>
       <p class="lede" data-reveal>Une recette transmise par les anciens propriétaires, devenue « l’âme de la boulangerie ». 5 crêpes + 1 pot de confiture = 10 €.</p>
       <p data-reveal>${ctaLink(route('indispensables'), 'La série complète', 'btn--ghost')}</p></div>
@@ -74,7 +74,7 @@ export function render(): string {
   <section class="section section--band" aria-labelledby="piz-title"><div class="wrap">
     ${sectionHead('Chaque lundi', 'Pizza du lundi', 'La Méditerranéenne et L’Américaine, préparées sur place.').replace('<h2 class="h2"', '<h2 id="piz-title" class="h2"')}
     <p style="margin-bottom:14px">${mockTag('Prix exemple')}</p>
-    <div class="grid-auto" style="max-width:700px">${['pizza-mediterraneenne', 'pizza-americaine'].map(shelfItem).join('')}</div>
+    <div class="cols-2" style="align-items:center"><div class="grid-auto">${['pizza-mediterraneenne', 'pizza-americaine'].map(shelfItem).join('')}</div><figure class="photo-tile photo-tile--43" data-reveal="clip">${photoImg(photo('pizza-lundi'))}<figcaption class="photo-cap">Photo d’illustration</figcaption></figure></div>
     <p style="margin-top:20px">${ctaLink(route('dejeuner') + '#pizza', 'Le midi et la pizza', 'btn--store')}</p>
   </div></section>
 
@@ -95,7 +95,7 @@ export function render(): string {
 
   <section class="section" aria-labelledby="cmd-title"><div class="wrap">
     ${sectionHead('Commandes et événements', 'Un gâteau, des minis, un plateau', `${orderOffers.length} formules sur commande. Minis : -10 % dès 20 pièces.`).replace('<h2 class="h2"', '<h2 id="cmd-title" class="h2"')}
-    <div class="grid-auto">${orderOffers.slice(0, 4).map((o) => `<a class="card cardlink" href="${route('commandes')}" data-reveal><div style="background:var(--band);border-radius:10px;padding:14px 24%">${art(o.illustration === 'number' ? 'number' : o.illustration === 'minis' ? 'minis' : o.illustration === 'tray' ? 'tray' : 'cake')}</div><h3 class="h3">${esc(o.title)}</h3><p class="muted" style="margin:0">${esc(o.description)}</p></a>`).join('')}</div>
+    <div class="grid-auto">${orderOffers.slice(0, 4).map((o) => `<a class="card cardlink" href="${route('commandes')}" data-reveal>${cardMedia(photoFor(o.illustration), o.illustration)}<h3 class="h3">${esc(o.title)}</h3><p class="muted" style="margin:0">${esc(o.description)}</p></a>`).join('')}</div>
   </div></section>
 
   <section class="section section--band" aria-labelledby="inf-title"><div class="wrap cols-2">
@@ -146,7 +146,7 @@ export function init(main: HTMLElement, ready: Promise<void>): void {
     const h = splitReveal(h1, { paused: true })
     ready.then(() => { tl.play(); h?.play() })
   } else ready.then(() => tl.play())
-  mm.add('(min-width: 960px)', () => {
+  mm.add('(min-width: 960px) and (pointer: fine)', () => {
     if (shelf) gsap.to(shelf, { y: -30, ease: 'none', scrollTrigger: { trigger: shelf, start: 'top 70%', end: 'bottom top', scrub: 0.6 } })
   })
 }

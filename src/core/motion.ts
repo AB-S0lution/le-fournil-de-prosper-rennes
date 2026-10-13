@@ -7,12 +7,26 @@ import { Flip } from 'gsap/Flip'
 import Lenis from 'lenis'
 
 gsap.registerPlugin(ScrollTrigger, SplitText, Flip)
+// Phones: the URL bar showing/hiding must not trigger a full refresh (it made pins jump).
+ScrollTrigger.config({ ignoreMobileResize: true })
 
 export { gsap, ScrollTrigger, SplitText, Flip }
 
 export const EASE_OUT = 'expo.out'
 export const root = document.documentElement
 export const motionOn = (): boolean => root.classList.contains('js-motion')
+/** Touch-first or narrow screens get the lighter motion set (no pins, shorter travel, no blur). */
+export const LIGHT_MQ = '(max-width: 899px), (pointer: coarse)'
+export const FULL_MQ = '(min-width: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
+export const isLight = (): boolean => matchMedia(LIGHT_MQ).matches
+
+/** Last line of defence: if anything throws or stalls, show every hidden element. */
+export function revealEverything(): void {
+  root.classList.add('reveal-all')
+  document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => { el.style.visibility = 'visible' })
+}
+window.addEventListener('error', revealEverything)
+window.addEventListener('unhandledrejection', revealEverything)
 
 let lenis: Lenis | null = null
 export const getLenis = (): Lenis | null => lenis
@@ -43,12 +57,17 @@ export function splitReveal(el: HTMLElement, opts: { trigger?: boolean; delay?: 
     return null
   }
   const tl = gsap.timeline({ paused: opts.paused ?? false, delay: opts.delay ?? 0 })
+  let done = false
   const run = () => {
+    if (done) return
+    done = true
     const split = new SplitText(el, { type: 'lines', mask: 'lines', linesClass: 'ln' })
     el.style.visibility = 'visible'
-    tl.from(split.lines, { yPercent: 108, duration: 1, ease: EASE_OUT, stagger: 0.09 }, 0)
+    tl.from(split.lines, { yPercent: 108, duration: isLight() ? 0.8 : 1, ease: EASE_OUT, stagger: isLight() ? 0.06 : 0.09 }, 0)
   }
   document.fonts.ready.then(run)
+  // fonts can stall on slow mobile networks: never leave a heading hidden
+  window.setTimeout(run, 2500)
   if (opts.trigger) {
     tl.pause()
     ScrollTrigger.create({ trigger: el, start: 'top 88%', once: true, onEnter: () => tl.play() })
@@ -62,20 +81,34 @@ export function revealAll(scope: ParentNode): void {
   const items = Array.from(scope.querySelectorAll<HTMLElement>('[data-reveal]'))
   if (!items.length) return
   let q = 0
+  const light = isLight()
   items.forEach((el) => {
     ScrollTrigger.create({
       trigger: el,
       start: 'top 92%',
       once: true,
       onEnter: () => {
-        const delay = Math.min(q++, 5) * 0.08
+        const delay = Math.min(q++, light ? 3 : 5) * (light ? 0.06 : 0.08)
         requestAnimationFrame(() => { q = 0 })
-        if (el.dataset.reveal === 'clip') gsap.to(el, { clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.inOut', delay })
-        else gsap.to(el, { opacity: 1, x: 0, y: 0, duration: 0.85, ease: EASE_OUT, delay })
+        if (el.dataset.reveal === 'clip') gsap.to(el, { clipPath: 'inset(0 0 0% 0)', duration: light ? 0.75 : 1, ease: 'power3.inOut', delay })
+        else gsap.to(el, { opacity: 1, x: 0, y: 0, duration: light ? 0.6 : 0.85, ease: EASE_OUT, delay })
       },
     })
   })
   items.forEach((el) => el.classList.add('rv'))
+  // Fail-safe: if a trigger never fires (odd scroll container, frozen tab), reveal what is already on screen or above it.
+  window.setTimeout(() => {
+    items.forEach((el) => {
+      if (el.getBoundingClientRect().top < innerHeight && getComputedStyle(el).opacity === '0') gsap.set(el, { opacity: 1, x: 0, y: 0, clipPath: 'inset(0 0 0% 0)' })
+    })
+  }, 3000)
+}
+
+/** Pause CSS loops (marquee) while they are off screen. */
+export function pauseOffscreen(scope: ParentNode, selector: string): void {
+  if (!('IntersectionObserver' in window)) return
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => (e.target as HTMLElement).classList.toggle('is-offscreen', !e.isIntersecting)))
+  scope.querySelectorAll(selector).forEach((el) => io.observe(el))
 }
 
 export function splitAll(scope: ParentNode): void {

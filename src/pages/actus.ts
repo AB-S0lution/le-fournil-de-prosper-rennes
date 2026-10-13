@@ -4,10 +4,11 @@ import { pageHero, mockTag } from '../core/ui.ts'
 import { posts, postTags } from '../data/posts.ts'
 import { href } from '../core/dom.ts'
 import { formatLongDate } from '../data/shop.ts'
-import { photos, photoImg } from '../data/photos.ts'
+import { photoImg } from '../data/photos.ts'
+import { postPhoto } from '../core/ui.ts'
 
 const card = (p: (typeof posts)[number], i: number): string => `<a class="post-card" href="${href('actus/' + p.slug + '.html')}" data-post data-tag="${p.tag}" data-reveal>
-  <div class="post-card__art post-card__art--photo">${photoImg(photos[(i * 7 + 3) % photos.length], 'photo')}<span class="photo-cap photo-cap--over">Photo d’illustration</span><span class="post-card__badge" aria-hidden="true">${art(p.illustration)}</span></div><div class="post-card__body"><div class="post-card__meta"><span class="tag">${esc(p.tag)}</span><time datetime="${p.date}">${esc(formatLongDate(p.date))}</time>${p.mock ? mockTag('Exemple') : ''}</div>
+  <div class="post-card__art post-card__art--photo">${photoImg(postPhoto(p), 'photo', i < 3)}<span class="photo-cap photo-cap--over">Photo d’illustration</span><span class="post-card__badge" aria-hidden="true">${art(p.illustration)}</span></div><div class="post-card__body"><div class="post-card__meta"><span class="tag">${esc(p.tag)}</span><time datetime="${p.date}">${esc(formatLongDate(p.date))}</time>${p.mock ? mockTag('Exemple') : ''}</div>
   <h2 class="post-card__title">${esc(p.title)}</h2><p class="muted" style="margin:0;font-size:.95rem">${esc(p.excerpt)}</p></div></a>`
 export function render(): string {
   const sorted = [...posts].sort((a, b) => b.date.localeCompare(a.date))

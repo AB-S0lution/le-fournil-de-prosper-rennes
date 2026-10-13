@@ -1,3 +1,4 @@
+import { photo, photoFig } from '../data/photos.ts'
 import { esc } from '../core/dom.ts'
 import { icon } from '../core/icons.ts'
 import { art } from '../core/art.ts'
@@ -15,6 +16,7 @@ export function render(): string {
     <div class="carnet" role="tablist" aria-label="Choisir un Flankie" data-carnet>${flankies.map((f, i) => `<button class="carnet__tab" role="tab" type="button" aria-selected="${f === currentFlankie}" data-i="${i}"><b>${esc(f.name)}</b><small>${esc(f.monthLabel)}</small>${mini(f)}${f.real ? realTag('Vrai') : mockTag('Idée (exemple)')}</button>`).join('')}</div>
     <div class="carnet__detail" data-detail aria-live="polite"></div>
   </div></section>
+  <section class="section" style="padding-top:0" aria-label="Photos d’ambiance"><div class="wrap photo-trio">${['cookies-plaque', 'tarte-citron', 'chocolat-eclats'].map((s) => photoFig(photo(s), 'photo-tile')).join('')}</div></section>
   <section class="section section--surface"><div class="wrap cols-2 cols-2--wide-right">
     <div><p class="label" data-reveal>Le prochain</p><h2 class="h2" data-split style="margin:12px 0 14px">Quel Flankie le mois prochain ?</h2><p class="lede" data-reveal>Une idée de sondage pour la démonstration : votez, rien n’est enregistré.</p></div>
     <div class="poll" data-poll role="group" aria-label="Sondage d’exemple">${['Tarte au citron', 'Caramel beurre salé', 'Fraise et vanille', 'Chocolat et noisette'].map((o) => `<button class="poll__opt" type="button" aria-pressed="false"><span>${o}</span><span class="tnum" data-pct></span></button>`).join('')}<p class="note-demo" data-poll-note>Sondage d’exemple, aucune donnée enregistrée.</p></div>

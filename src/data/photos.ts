@@ -50,6 +50,14 @@ const rows: Row[] = [
   ['crepes', '1519676867240-f03562e64548', 667, 1000, 'midi', 'Crêpes pliées en quatre dans des assiettes'],
   ['petrissage', '1517686469429-8bdb88b9f907', 1400, 933, 'fournil', 'Mains qui pétrissent une pâte sur un plan fariné'],
   ['boutique-soir', '1571942948809-74637bfc59b9', 1400, 933, 'fournil', 'Intérieur de boulangerie avec étagères de miches, comptoir vitré de brioches et bouquet de fleurs séchées'],
+  ['baguette', '1554475659-9fd915c8f156', 1200, 1500, 'pains', 'Baguettes croustillantes posées sur un torchon'],
+  ['sandwich', '1553909489-cd47e0907980', 1200, 960, 'midi', 'Sandwich garni coupé en deux sur une surface claire'],
+  ['sandwich-legumes', '1509722747041-616f39b57569', 1200, 800, 'midi', 'Pain garni de légumes sur une planche à découper'],
+  ['quiche', '1608855725042-e95ffd4ca487', 1200, 1800, 'midi', 'Part de quiche dorée et petite salade dans une assiette'],
+  ['salade', '1512621776951-a57141f2eefd', 1200, 800, 'midi', 'Bol de salade composée aux légumes frais'],
+  ['macarons', '1569864358642-9d1684040f43', 1200, 800, 'patisseries', 'Macarons de toutes les couleurs alignés'],
+  ['galette', '1547675999-f71c79b90fb6', 1200, 1794, 'patisseries', 'Galette feuilletée dorée, rayée en soleil, entourée de noix de pécan'],
+  ['confiture', '1633084426862-3a8c25aa7ce5', 1200, 1600, 'fournil', 'Bocal de confiture de fruits rouges avec une cuillère en bois'],
 ]
 
 export const photos: Photo[] = rows.map(([slug, id, width, height, theme, alt]) => ({
@@ -79,4 +87,26 @@ export function photo(slug: string): Photo {
 /** <img> markup for a photo; lazy by default. */
 export function photoImg(p: Photo, cls = 'photo', eager = false): string {
   return `<img class="${cls}" src="${p.src}" alt="${p.alt.replace(/"/g, '&quot;')}" width="${p.width}" height="${p.height}" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`
+}
+
+/** Which illustration photo best matches an SVG illustration key (products, posts, offers). */
+const byIllustration: Record<string, string> = {
+  baguette: 'baguette', loaf: 'pain-campagne', levain: 'miche-tranchee', seigle: 'pains-cereales',
+  croissant: 'croissant-farine', painchoc: 'plateau-viennoiseries', raisins: 'vitrine-viennoiseries', brioche: 'vitrine-viennoiseries',
+  tressee: 'plateau-viennoiseries', roll: 'cinnamon-rolls', babka: 'cake-tranche', chausson: 'croissants-tas', kouign: 'croissant-farine',
+  palmier: 'vitrine-viennoiseries', minis: 'plateau-viennoiseries', flankie: 'cookies-plaque', flan: 'tarte-citron', far: 'cake-tranche',
+  meringue: 'tarte-citron', macaron: 'macarons', tarte: 'tarte-fruits-rouges', entremets: 'gateau-mures', number: 'gateau-anniversaire',
+  wedding: 'gateau-mures', cake: 'gateau-anniversaire', eclair: 'chocolat-eclats', tartecitron: 'tarte-citron', parisbrest: 'verrines-fraises',
+  gateaubreton: 'cake-tranche', chouquette: 'beignets', crepe: 'crepes', crepes: 'crepes', sandwich: 'sandwich', croque: 'croque-monsieur',
+  quiche: 'quiche', salade: 'salade', pizza: 'pizza-lundi', cafe: 'boutique-soir', galette: 'galette', couronne: 'galette',
+  egg: 'chocolat-eclats', fraisier: 'verrines-fraises', papouney: 'gateau-chocolat', tennis: 'tartelettes-fruits', nicolas: 'croissants-tas',
+  buche: 'gateau-chocolat', sapin: 'plateau-viennoiseries', tray: 'tartelettes-fruits', surprise: 'sandwich-legumes', jam: 'confiture',
+}
+export function photoFor(illustration: string, fallback = 'corbeille-pains'): Photo {
+  return photo(byIllustration[illustration] ?? fallback)
+}
+
+/** A captioned figure; `cls` picks the frame (photo-tile, photo-band, photo-slim). */
+export function photoFig(p: Photo, cls = 'photo-band', reveal = 'clip'): string {
+  return `<figure class="${cls}"${reveal ? ` data-reveal="${reveal}"` : ''}>${photoImg(p, 'photo')}<figcaption class="photo-cap">Photo d’illustration</figcaption></figure>`
 }

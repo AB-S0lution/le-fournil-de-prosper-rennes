@@ -1,9 +1,12 @@
+import { photo, photoFig } from '../data/photos.ts'
+import { cardMedia } from '../core/ui.ts'
 import { esc } from '../core/dom.ts'
 import { icon } from '../core/icons.ts'
 import { pageHero, sectionHead, mockTag } from '../core/ui.ts'
 import { shop } from '../data/shop.ts'
 
 const near = [['Roazhon Park', 'Le stade du Stade Rennais, à environ 900 m. Les soirs de match, le quartier se remplit.'], ['Le Mabilay', 'La tour de télécommunications de Louis Arretche (1971-1973), à environ 800 m.'], ['La Prévalaye', 'Environ 400 hectares de campagne, d’étangs et de chemins de halage, sur le bord ouest.'], ['Métro Cleunay', 'Ligne B, ouverte en septembre 2022, à 4 minutes à pied du fournil.']]
+const ritualPhotos = ['croissants-tas', 'sandwich', 'baguette']
 const rituals = [['Avant la classe', 'Le groupe scolaire est dans la rue : pain au lait et baguette sur le chemin.'], ['Le midi', 'Les bureaux de La Courrouze passent au coin snacking.'], ['Le dimanche matin', 'Quand plusieurs boulangeries sont fermées, le fournil ouvre de 7h30 à 13h.']]
 export function render(): string {
   return `${pageHero({ crumb: [{ label: 'Le quartier' }], kicker: 'Cleunay, Rennes', title: 'Le quartier du fournil', lede: 'Cleunay est né après la guerre. La rue Champion de Cicé en est aujourd’hui l’axe commerçant : des immeubles, des commerces, une école.', art: 'loaf' })}
@@ -18,8 +21,9 @@ export function render(): string {
       <text x="260" y="262" font-size="12" fill="#22232f" opacity=".7">Schéma indicatif, pas à l’échelle</text></svg></div>
     <div class="stack" style="--stack:1rem"><h2 class="h2" data-split>${esc(shop.street)}</h2><p class="lede">Cleunay – Arsenal-Redon compte environ 14 000 habitants, sur la rive gauche de la Vilaine. Ici, le coin de rue a une boulangerie depuis 1987.</p>
       <a class="btn" href="${shop.mapsUrl}" rel="noopener" target="_blank">Itinéraire${icon('arrowUpRight')}</a></div></div></section>
+  <div class="wrap">${photoFig(photo('boutique-soir'), 'photo-slim')}</div>
   <section class="section section--band"><div class="wrap">${sectionHead('Autour', 'À deux pas, ou presque')}
     <div class="grid-auto">${near.map(([t, d]) => `<article class="card" data-reveal style="color:var(--ink)"><h3 class="h3">${esc(t)}</h3><p class="muted" style="margin:8px 0 0">${esc(d)}</p></article>`).join('')}</div></div></section>
   <section class="section"><div class="wrap">${sectionHead('Vos rituels de quartier', 'Une journée, trois habitudes', 'Texte éditorial d’exemple.')}
-    <div class="grid-auto">${rituals.map(([t, d]) => `<article class="card" data-reveal><h3 class="h3">${esc(t)}</h3><p class="muted" style="margin:8px 0 10px">${esc(d)}</p>${mockTag('Exemple')}</article>`).join('')}</div></div></section>`
+    <div class="grid-auto">${rituals.map(([t, d], i) => `<article class="card" data-reveal>${cardMedia(photo(ritualPhotos[i]))}<h3 class="h3">${esc(t)}</h3><p class="muted" style="margin:8px 0 10px">${esc(d)}</p>${mockTag('Exemple')}</article>`).join('')}</div></div></section>`
 }

@@ -2,7 +2,7 @@
 import { href, esc, safeGet, safeSet } from './dom.ts'
 import { icon } from './icons.ts'
 import { art } from './art.ts'
-import { gsap, motionOn, ScrollTrigger, mm } from './motion.ts'
+import { gsap, motionOn, ScrollTrigger, mm, FULL_MQ } from './motion.ts'
 import { pageByKey } from '../data/pages.ts'
 import { products, productById, allergenLabels, tagLabels, formatPrice, categoryLabels } from '../data/products.ts'
 import type { Product } from '../data/products.ts'
@@ -14,6 +14,8 @@ import { dayMoments } from '../data/dayMoments.ts'
 import type { Flankie } from '../data/flankies.ts'
 import { addDays, dayNames, dayShort, fmtTime, formatShortDate, getDayPlan, monthNames, weekdayOf, isoToUTC, toMinutes } from '../data/shop.ts'
 import { todayIso } from './state.ts'
+import { photoFor, photoImg } from '../data/photos.ts'
+import type { Photo } from '../data/photos.ts'
 
 export const route = (key: string, q = ''): string => href((pageByKey(key)?.path ?? '') + q)
 export const prodLink = (id: string): string => href('la-carte/produit.html?id=' + encodeURIComponent(id))
@@ -55,6 +57,24 @@ export function ctaLink(to: string, text: string, cls = ''): string {
   return `<a class="btn ${cls}" href="${to}">${text}${icon('arrowRight')}</a>`
 }
 
+/** Photo header for a card, with the original SVG illustration kept as a round badge. */
+export function cardMedia(p: Photo, artKey?: string, cls = 'card-media'): string {
+  return `<div class="${cls}">${photoImg(p, 'photo')}<span class="photo-cap photo-cap--over">Photo d’illustration</span>${artKey ? `<span class="card-media__badge" aria-hidden="true">${art(artKey)}</span>` : ''}</div>`
+}
+
+/** Cover photo for a gazette article: explicit picks first, then by illustration. */
+const postCovers: Record<string, string> = {
+  'flankie-octobre-2026': 'cookie-gourmand', 'flankie-aout-2026': 'tarte-citron', 'prosper-metier-exigeant': 'petrissage',
+  'tennis-ball-open-rennes': 'tartelettes-fruits', 'levain-t150-maison-lucie': 'miche-tranchee', 'rentree-pizzas-2026': 'pizza-planche',
+  'conges-ete-2026': 'boutique-soir', 'anniversaire-5-ans': 'gateau-anniversaire', 'carte-des-fetes-2025': 'gateau-chocolat',
+  'degustation-buches-2025': 'gateau-mures', 'quatre-ans-14-ans-boulanger': 'croissants-tas', 'conserver-son-pain': 'tranches-levain',
+  'quartier-jours-de-match': 'corbeille-pains', 'coulisses-du-feuilletage': 'croissant-farine', 'trusttheprocess-viennoiserie': 'plateau-viennoiseries',
+  'sapin-feuillete-2024': 'vitrine-viennoiseries', 'brioches-saint-nicolas-2024': 'cinnamon-rolls',
+}
+export function postPhoto(post: { slug: string; illustration: string }): Photo {
+  return postCovers[post.slug] ? photoFor('', postCovers[post.slug]) : photoFor(post.illustration)
+}
+
 export function mockTag(text = 'Exemple'): string {
   return `<span class="mock-tag">${esc(text)}</span>`
 }
@@ -80,7 +100,7 @@ export function shelfItem(id: string): string {
 export function prodCard(p: Product): string {
   const tags = p.tags.slice(0, 3).map((t) => `<span class="tag ${t === 'vegetarien' ? 'tag--veg' : ''}">${esc(tagLabels[t])}</span>`).join('')
   return `<article class="prod-wrap" data-prod="${p.id}" data-cat="${p.category}"><button class="prod" type="button" data-open="${p.id}" aria-haspopup="dialog">
-    <div class="prod__shelf">${art(p.illustration)}</div><div class="prod__board"></div>
+    ${cardMedia(photoFor(p.illustration), p.illustration, 'card-media card-media--prod')}<div class="prod__board"></div>
     <div class="prod__body"><div class="prod__title"><h3 class="prod__name">${esc(p.name)}</h3>${priceTag(p)}</div>
     <p class="prod__desc">${esc(p.description)}</p><div class="prod__tags">${tags}${p.flag ? `<span class="tag">${esc(p.flag)}</span>` : ''}</div></div></button></article>`
 }
@@ -89,7 +109,7 @@ const dayDots = (days: number[]): string =>
   `<div class="days" role="img" aria-label="Jours de disponibilité : ${days.map((d) => dayNames[d]).join(', ')}">${[1, 2, 3, 4, 5, 6, 0].map((d) => `<span class="${days.includes(d) ? 'on' : ''}" aria-hidden="true">${dayShort[d][0].toUpperCase()}</span>`).join('')}</div>`
 
 export function productDetail(p: Product): string {
-  return `<div class="drawer__art">${art(p.illustration, p.name)}</div>
+  return `<figure class="photo-band photo-band--drawer">${photoImg(photoFor(p.illustration), 'photo')}<figcaption class="photo-cap">Photo d’illustration</figcaption></figure><div class="drawer__art">${art(p.illustration, p.name)}</div>
     <div><p class="label">${esc(categoryLabels[p.category])}</p><h2 class="h3" style="margin-top:6px">${esc(p.name)}</h2></div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${priceTag(p)}<span class="muted">${esc(p.unit)}</span>${p.real ? realTag('Produit du fournil') : mockTag('Prix exemple')}</div>
     ${p.flag ? `<p class="note-demo">${esc(p.flag)}</p>` : ''}
@@ -143,7 +163,7 @@ export function tickets(n = 6, offset = 0): string {
 export function weekStrip(): string {
   const start = todayIso()
   const days = Array.from({ length: 7 }, (_, i) => addDays(start, i))
-  return `<div class="week" role="list">${days
+  return `<p class="swipe-hint swipe-hint--week" aria-hidden="true">Glissez pour voir la semaine <span>→</span></p><div class="week" role="list">${days
     .map((iso, i) => {
       const plan = getDayPlan(iso)
       const r = weekRituals.find((w) => w.weekday === plan.weekday)
@@ -166,11 +186,11 @@ export function weekStrip(): string {
 // ---------- seasons rail ----------
 export function seasonRail(): string {
   const cur = Number(todayIso().slice(5, 7))
-  return `<div class="rail" data-rail tabindex="0" aria-label="Les douze mois du fournil, faites défiler">${seasons
+  return `<p class="swipe-hint swipe-hint--rail" aria-hidden="true">Glissez pour voir les mois <span>→</span></p><div class="rail" data-rail tabindex="0" aria-label="Les douze mois du fournil, faites défiler">${seasons
     .map((s) => {
       const arts = s.productIds.slice(0, 2).map((id) => productById(id)).filter(Boolean) as Product[]
       return `<article class="sheet ${s.month === cur ? 'is-now' : ''}"><div class="sheet__top"><span class="sheet__month">${s.name}</span><span class="sheet__num">${String(s.month).padStart(2, '0')}</span></div>
-      <div class="sheet__body"><p class="sheet__tag">${esc(s.tagline)}</p><div class="sheet__arts">${arts.map((p) => `<div>${art(p.illustration)}</div>`).join('')}</div></div></article>`
+      ${arts[0] ? `<div class="sheet__photo">${photoImg(photoFor(arts[0].illustration), 'photo')}</div>` : ''}<div class="sheet__body"><p class="sheet__tag">${esc(s.tagline)}</p><div class="sheet__arts">${arts.map((p) => `<div>${art(p.illustration)}</div>`).join('')}</div></div></article>`
     })
     .join('')}</div>
   <div class="rail-controls" style="margin-top:6px"><button class="iconbtn" type="button" data-rail-prev aria-label="Mois précédents" style="background:var(--surface-2);color:var(--ink)">${icon('caretLeft')}</button><button class="iconbtn" type="button" data-rail-next aria-label="Mois suivants" style="background:var(--surface-2);color:var(--ink)">${icon('caretRight')}</button></div>`
@@ -218,7 +238,8 @@ export function dayPan(): string {
         <div class="pan__sun" data-pan-sun aria-hidden="true"></div>
         <div class="pan__clock tnum" data-pan-clock aria-hidden="true">6h45</div>
       </div>
-      <div class="pan__track" data-pan-track>${dayMoments
+      <p class="swipe-hint wrap" aria-hidden="true">Glissez pour suivre la journée <span>→</span></p>
+      <div class="pan__track" data-pan-track tabindex="0" aria-label="Les moments de la journée, faites défiler">${dayMoments
         .map((m) => `<article class="pan-card" data-pan-card><div class="pan-card__time">${esc(m.time)}</div><h3 class="h3">${esc(m.title)}</h3><p class="muted" style="margin:0">${esc(m.text)}</p>
           <div class="pan-card__items">${m.productIds.map((id) => productById(id)).filter(Boolean).map((p) => `<figure>${art(p!.illustration)}<figcaption>${esc(p!.name)}</figcaption></figure>`).join('')}</div></article>`)
         .join('')}</div>
@@ -233,7 +254,7 @@ export function bindPan(scope: ParentNode): void {
   const clock = sec.querySelector<HTMLElement>('[data-pan-clock]')!
   const tint = sec.querySelector<HTMLElement>('[data-pan-tint]')!
   const times = dayMoments.map((m) => m.time)
-  mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+  mm.add(FULL_MQ, () => {
     if (!motionOn()) return
     sec.classList.remove('no-pin')
     const dist = () => track.scrollWidth - window.innerWidth + 80
@@ -249,10 +270,24 @@ export function bindPan(scope: ParentNode): void {
       gsap.set(track, { clearProps: 'transform' })
     }
   })
-  mm.add('(max-width: 899px)', () => {
-    sec.querySelectorAll('[data-pan-card]').forEach((c) => {
-      if (motionOn()) gsap.from(c, { y: 36, opacity: 0, duration: 0.8, ease: 'expo.out', scrollTrigger: { trigger: c, start: 'top 88%', once: true } })
-    })
+  // Touch and narrow screens: no pin, the day becomes a native swipe rail. Cards slide in once, the sun crosses with the swipe.
+  mm.add('(prefers-reduced-motion: no-preference) and (max-width: 899px), (prefers-reduced-motion: no-preference) and (pointer: coarse)', () => {
+    if (!motionOn()) return
+    const cards = sec.querySelectorAll<HTMLElement>('[data-pan-card]')
+    gsap.set(cards, { opacity: 0, x: 48 })
+    const st = ScrollTrigger.create({ trigger: track, start: 'top 85%', once: true, onEnter: () => gsap.to(cards, { opacity: 1, x: 0, duration: 0.7, ease: 'expo.out', stagger: 0.08 }) })
+    const fail = window.setTimeout(() => { if (track.getBoundingClientRect().top < innerHeight) gsap.set(cards, { opacity: 1, x: 0 }) }, 4000)
+    const onScroll = (): void => {
+      const max = track.scrollWidth - track.clientWidth
+      const p = max > 0 ? track.scrollLeft / max : 0
+      clock.textContent = times[Math.min(times.length - 1, Math.round(p * (times.length - 1)))]
+    }
+    track.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      st.kill(); window.clearTimeout(fail)
+      track.removeEventListener('scroll', onScroll)
+      gsap.set(cards, { clearProps: 'opacity,transform' })
+    }
   })
 }
 
@@ -295,7 +330,7 @@ export function bindFlankie(scope: ParentNode): void {
   setOn(2)
   const build = (pin: boolean) => {
     sec.classList.remove('flankie--static')
-    layers.forEach((l) => gsap.set(l, { opacity: 0, y: -260 }))
+    layers.forEach((l) => gsap.set(l, { opacity: 0, y: pin ? -260 : -140 }))
     steps.forEach((s) => s.classList.remove('is-on'))
     const tl = gsap.timeline({
       scrollTrigger: pin
@@ -314,8 +349,9 @@ export function bindFlankie(scope: ParentNode): void {
       setOn(2)
     }
   }
-  mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => (motionOn() ? build(true) : undefined))
-  mm.add('(max-width: 899px) and (prefers-reduced-motion: no-preference)', () => (motionOn() ? build(false) : undefined))
+  // Pin only with a fine pointer on wide screens; touch tablets and phones get the same build, scrubbed in place.
+  mm.add(FULL_MQ, () => (motionOn() ? build(true) : undefined))
+  mm.add('(prefers-reduced-motion: no-preference) and (max-width: 899px), (prefers-reduced-motion: no-preference) and (pointer: coarse)', () => (motionOn() ? build(false) : undefined))
 }
 
 // ---------- order slip (sessionStorage) ----------
