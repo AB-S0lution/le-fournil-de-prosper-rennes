@@ -90,7 +90,7 @@ function infoHTML(iso: string): string {
   const ids = r?.productIds.length ? r.productIds : ['croissant', 'pain-chocolat', 'baguette-tradition', 'flankie']
   const ps = ids.map((id) => productById(id)).filter(Boolean)
   const note = plan.exception ? `<p class="bracket">${esc(plan.exception.label)}</p><p>${esc(plan.exception.detail)}</p>` : plan.notice ? `<p class="bracket">${esc(plan.notice.label)} (à confirmer)</p>` : ''
-  return `<h3>${esc(formatLongDate(iso))}</h3>${note}<p>${esc(r?.title ?? '')}${r && !r.real ? ' (exemple)' : ''}. ${esc(r?.text ?? '')}</p>
+  return `<h3>${esc(formatLongDate(iso))}</h3>${note}<p>${esc(r?.title ?? '')}${r && !r.real ? ' (exemple)' : ''}${/[.!?]$/.test(r?.title ?? '') && !(r && !r.real) ? '' : '.'} ${esc(r?.text ?? '')}</p>
     <div class="tear__prods">${ps.map((p) => `<figure>${art(p!.illustration)}<figcaption>${esc(p!.name)}</figcaption></figure>`).join('')}</div>`
 }
 

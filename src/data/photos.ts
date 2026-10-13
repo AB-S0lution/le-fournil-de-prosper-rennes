@@ -19,12 +19,12 @@ const base = import.meta.env.BASE_URL
 type Row = [slug: string, id: string, w: number, h: number, theme: PhotoTheme, alt: string]
 
 const rows: Row[] = [
-  ['croissant-farine', '1555507036-ab1f4038808a', 1400, 1120, 'viennoiseries', 'Croissants dorés saupoudrés de farine sur une planche sombre'],
+  ['croissant-farine', '1555507036-ab1f4038808a', 1400, 1120, 'viennoiseries', 'Croissant doré saupoudré de sucre glace sur une ardoise sombre'],
   ['croissants-tas', '1530610476181-d83430b64dcd', 1100, 1467, 'viennoiseries', 'Un tas de croissants feuilletés tout juste sortis du four'],
   ['plateau-viennoiseries', '1483695028939-5bb13f8648b0', 1400, 933, 'viennoiseries', 'Plaque de pains au chocolat et de viennoiseries alignés'],
   ['vitrine-viennoiseries', '1568254183919-78a4f43a2877', 1400, 935, 'viennoiseries', 'Vitrine de boulangerie garnie de viennoiseries et de brioches'],
   ['cinnamon-rolls', '1509365465985-25d11c17e812', 818, 1000, 'viennoiseries', 'Roulés à la cannelle vus du dessus, saupoudrés de sucre'],
-  ['beignets', '1612240498936-65f5101365d2', 1100, 1650, 'viennoiseries', 'Beignets glacés sur fond sombre'],
+  ['beignets', '1612240498936-65f5101365d2', 1100, 1650, 'viennoiseries', 'Beignets glacés en suspension sur fond sombre'],
   ['pain-campagne', '1586444248902-2f64eddc13df', 1400, 933, 'pains', 'Grosse miche de campagne farinée, grigne bien ouverte'],
   ['miche-tranchee', '1549931319-a545dcf3bc73', 1400, 933, 'pains', 'Miche au levain tranchée sur une planche en bois'],
   ['pains-cereales', '1509440159596-0249088772ff', 1100, 732, 'pains', 'Pains aux céréales et épis de blé sur un plan de travail'],
@@ -38,18 +38,18 @@ const rows: Row[] = [
   ['verrines-fraises', '1488477181946-6428a0291777', 1400, 2100, 'patisseries', 'Petites verrines crème et fraises'],
   ['gateau-anniversaire', '1586985289688-ca3cf47d3e6e', 1400, 2100, 'patisseries', 'Gâteau à étages en cours de décoration à la poche'],
   ['gateau-mures', '1559620192-032c4bc4674e', 1400, 1895, 'patisseries', 'Gâteau crème et mûres sur un présentoir'],
-  ['gateau-chocolat', '1541783245831-57d6fb0926d3', 1400, 2100, 'patisseries', 'Nappage au chocolat coulant sur un gâteau'],
+  ['gateau-chocolat', '1541783245831-57d6fb0926d3', 1400, 2100, 'patisseries', 'Nappage au chocolat coulant sur un gâteau en couronne'],
   ['chocolat-eclats', '1606312619070-d48b4c652a52', 1400, 2100, 'patisseries', 'Éclats de chocolat noir empilés'],
   ['cookies-plaque', '1499636136210-6f4ee915583e', 799, 1000, 'patisseries', 'Cookies aux pépites de chocolat sur papier cuisson'],
   ['cookies-panier', '1558961363-fa8fdf82db35', 1100, 1375, 'patisseries', 'Panier de cookies maison'],
   ['cookie-gourmand', '1621236378699-8597faf6a176', 1400, 1923, 'patisseries', 'Cookie gourmand aux éclats colorés dans une assiette'],
-  ['cake-tranche', '1606101273945-e9eba91c0dc4', 1400, 933, 'patisseries', 'Cake aux pépites de chocolat tranché sur une grille'],
+  ['cake-tranche', '1606101273945-e9eba91c0dc4', 1400, 933, 'patisseries', 'Cake aux noix de pécan et pépites de chocolat tranché sur une grille'],
   ['pizza-lundi', '1513104890138-7c749659a591', 1100, 733, 'midi', 'Pizza tomates cerises et romarin, découpée en parts'],
   ['pizza-planche', '1565299624946-b28f40a0ae38', 828, 1000, 'midi', 'Pizza garnie sur une planche en bois'],
   ['croque-monsieur', '1528735602780-2552fd46c7af', 1400, 930, 'midi', 'Croque grillé coupé en triangles avec ses sauces'],
   ['crepes', '1519676867240-f03562e64548', 667, 1000, 'midi', 'Crêpes pliées en quatre dans des assiettes'],
   ['petrissage', '1517686469429-8bdb88b9f907', 1400, 933, 'fournil', 'Mains qui pétrissent une pâte sur un plan fariné'],
-  ['boutique-soir', '1587241321921-91a834d6d191', 1400, 933, 'fournil', 'Intérieur de boulangerie éclairé, étagères de pains en arrière-plan'],
+  ['boutique-soir', '1571942948809-74637bfc59b9', 1400, 933, 'fournil', 'Intérieur de boulangerie avec étagères de miches, comptoir vitré de brioches et bouquet de fleurs séchées'],
 ]
 
 export const photos: Photo[] = rows.map(([slug, id, width, height, theme, alt]) => ({
