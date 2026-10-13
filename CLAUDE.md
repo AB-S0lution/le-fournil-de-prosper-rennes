@@ -1,0 +1,10 @@
+# Le Fournil de Prosper, Rennes (démo)
+
+- **Concept**: « 6 jours sur 7 ». Le site est le calendrier vivant de la boulangerie (statut ouvert/fermé du moment, semaine, journée), avec le **Flankie du mois** montré couche par couche. Palette de la devanture: anthracite #22232f, chêne #cbb89d, terracotta #a9472a, acier #5c7c99, enseigne #f3f3ef. Polices: Bricolage Grotesque (variable), Marcellus SC (étiquettes), Pinyon Script (nom seulement).
+- **Source de vérité**: `PLAN.md`. Ne jamais publier: distributeur de pain extérieur, prix Too Good To Go, mois de naissance de Prosper, lien Pappers, noms de bûches inventés. Pas de tiret cadratin.
+- **Lancer**: `npm run dev`. **Vérifier**: `npm run typecheck && npm run build`, puis `npm run preview` (base `/le-fournil-de-prosper-rennes/`).
+- **Pages**: la liste est dans `src/data/pages.ts`. `npm run pages` (re)génère les coques HTML (`scripts/make-pages.mjs`: head, SEO, JSON-LD Bakery avec faits vérifiés). Chaque coque charge `src/main.ts`, qui choisit `src/pages/<key>.ts` via `data-page` (et `data-slug` pour les articles). Ajouter une page: une ligne dans `pages.ts`, un module `src/pages/<key>.ts` (`render()`, option `init()`), puis `npm run pages`.
+- **Ouvert maintenant?** `src/data/shop.ts` (`getShopState`, `getDayPlan`) lit `closures.ts` AVANT les horaires hebdomadaires. Seules les entrées `confirmed: true` changent les horaires; les dates futures « à confirmer » n'affichent qu'un avis. Aperçu: `?date=2026-07-20&time=10:30`.
+- **Mouvement**: GSAP (ScrollTrigger, SplitText, Flip) + Lenis. `html.js-motion` / `html.rm` posés par le script inline; les états cachés n'existent que sous `.js-motion.js-ready`. Épinglage seulement ≥ 900 px et sans réduction de mouvement. Transition de page: disque « crêpe » (`core/transition.ts`).
+- **Particularités**: `typo()` (core/dom.ts) met les espaces insécables, passer tout HTML injecté par lui. Illustrations 100 % SVG originales (`core/art.ts`), aucune photo ni logo. Données `src/data/*.ts`, marquées réel/exemple. Les formulaires ouvrent `mailto:`, rien n'est envoyé.
+- **Git**: ne jamais committer ni pousser sans demande.
