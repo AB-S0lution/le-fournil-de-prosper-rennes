@@ -12,7 +12,7 @@ export function render(): string {
   const next = closures.filter((c) => !c.confirmed && c.start.includes('-12-'))
   return `${pageHero({ crumb: [{ label: 'La carte des fêtes' }], kicker: 'Décembre', title: 'La carte des fêtes', lede: 'Bûches, plateaux de mignardises, Sapin Feuilleté, pain surprise. Réservation en boutique ; les commandes prépayées ont une file à part.', art: 'buche' })}
   <section class="section" style="padding-top:0"><div class="wrap">${sectionHead('La carte', 'Pour les tables de fête', 'Les noms des quatre bûches ne sont pas encore publiés : le fournil les annonce chaque année.')}
-    ${photoFig(photo('gateau-chocolat'), 'photo-slim')}<div class="grid-auto" style="margin-top:clamp(24px,3vw,40px)">${ids.map(shelfItem).join('')}</div></div></section>
+    ${photoFig(photo('gateau-chocolat'), 'photo-slim')}<div class="grid-auto" style="margin-top:clamp(24px,3vw,40px);grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${ids.map(shelfItem).join('')}</div></div></section>
   <section class="section section--band"><div class="wrap cols-2">
     <div><p class="label">Réservations</p><h2 class="h2" data-split style="margin:12px 0">Les dates de l’an dernier</h2><p class="lede">Repères de décembre 2025, à confirmer pour cette année.</p>${photoFig(photo('gateau-mures'), 'photo-tile photo-tile--43')}</div>
     <ul class="ticklist"><li>${icon('calendar')}<span>Jusqu’au 20 décembre pour le 24 (en boutique).</span></li><li>${icon('calendar')}<span>Jusqu’au 26 décembre pour le 31.</span></li><li>${icon('ticket')}<span>Les commandes prépayées se retirent à une file séparée.</span></li><li>${icon('cookie')}<span>Une journée dégustation a lieu fin novembre : bûches, pains spéciaux et plateaux à goûter.</span></li></ul></div></section>

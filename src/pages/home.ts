@@ -74,7 +74,7 @@ export function render(): string {
   <section class="section section--band" aria-labelledby="piz-title"><div class="wrap">
     ${sectionHead('Chaque lundi', 'Pizza du lundi', 'La Méditerranéenne et L’Américaine, préparées sur place.').replace('<h2 class="h2"', '<h2 id="piz-title" class="h2"')}
     <p style="margin-bottom:14px">${mockTag('Prix exemple')}</p>
-    <div class="cols-2" style="align-items:center"><div class="grid-auto">${['pizza-mediterraneenne', 'pizza-americaine'].map(shelfItem).join('')}</div><figure class="photo-tile photo-tile--43" data-reveal="clip">${photoImg(photo('pizza-lundi'))}<figcaption class="photo-cap">Photo d’illustration</figcaption></figure></div>
+    <div class="cols-2" style="align-items:center"><div class="shelf__grid">${['pizza-mediterraneenne', 'pizza-americaine'].map(shelfItem).join('')}</div><figure class="photo-tile photo-tile--43" data-reveal="clip">${photoImg(photo('pizza-lundi'))}<figcaption class="photo-cap">Photo d’illustration</figcaption></figure></div>
     <p style="margin-top:20px">${ctaLink(route('dejeuner') + '#pizza', 'Le midi et la pizza', 'btn--store')}</p>
   </div></section>
 

@@ -14,6 +14,7 @@ function fixText(t: string): string {
     .replace(/« /g, '«' + NB)
     .replace(/(\d) (€|%|h\b|km\b|m\b|g\b|ans\b|min\b)/g, '$1' + NB + '$2')
     .replace(/(\d) (\d{3})(?!\d)/g, '$1' + NB + '$2')
+    .replace(/\b0(\d) (\d\d) (\d\d) (\d\d) (\d\d)\b/g, ['0$1', '$2', '$3', '$4', '$5'].join(NB))
     .replace(/\b(\d{1,2}) (juillet|août|janvier|février|mars|avril|mai|juin|septembre|octobre|novembre|décembre)\b/g, '$1' + NB + '$2')
 }
 /** French typography: non-breaking spaces before : ; ! ? » and after «, in prices and dates. Text nodes only. */

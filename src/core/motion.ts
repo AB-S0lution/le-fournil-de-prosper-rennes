@@ -88,6 +88,7 @@ export function revealAll(scope: ParentNode): void {
       start: 'top 92%',
       once: true,
       onEnter: () => {
+        el.dataset.rvd = '1'
         const delay = Math.min(q++, light ? 3 : 5) * (light ? 0.06 : 0.08)
         requestAnimationFrame(() => { q = 0 })
         if (el.dataset.reveal === 'clip') gsap.to(el, { clipPath: 'inset(0 0 0% 0)', duration: light ? 0.75 : 1, ease: 'power3.inOut', delay })
@@ -97,11 +98,47 @@ export function revealAll(scope: ParentNode): void {
   })
   items.forEach((el) => el.classList.add('rv'))
   // Fail-safe: if a trigger never fires (odd scroll container, frozen tab), reveal what is already on screen or above it.
-  window.setTimeout(() => {
-    items.forEach((el) => {
-      if (el.getBoundingClientRect().top < innerHeight && getComputedStyle(el).opacity === '0') gsap.set(el, { opacity: 1, x: 0, y: 0, clipPath: 'inset(0 0 0% 0)' })
-    })
-  }, 3000)
+  window.setTimeout(revealInView, 3000)
+  bindSafetyNet()
+}
+
+/** Reveal every hidden [data-reveal] that is on screen or above it (or everything left when the page end is reached). */
+export function revealInView(): void {
+  if (!motionOn()) return
+  const atEnd = innerHeight + scrollY >= root.scrollHeight - 8
+  document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+    if (el.dataset.rvd) return
+    const r = el.getBoundingClientRect()
+    if (!r.width && !r.height) return // hidden by a filter: handled when it comes back
+    if (r.top < innerHeight || atEnd) {
+      el.dataset.rvd = '1'
+      el.classList.add('rv')
+      gsap.to(el, { opacity: 1, x: 0, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 0.6, ease: EASE_OUT })
+    }
+  })
+}
+
+let netBound = false
+/** Late content (filters, inserted cards) and the last items at the page end: refresh triggers and reveal what is visible. */
+function bindSafetyNet(): void {
+  if (netBound) return
+  netBound = true
+  let t = 0
+  let needRefresh = false
+  const soon = (ms: number, refresh = false): void => {
+    needRefresh ||= refresh
+    window.clearTimeout(t)
+    t = window.setTimeout(() => {
+      if (needRefresh) ScrollTrigger.refresh()
+      needRefresh = false
+      revealInView()
+    }, ms)
+  }
+  window.addEventListener('scroll', () => soon(220), { passive: true })
+  // Only layout-changing mutations: a filter toggling [hidden], an accordion opening, or new [data-reveal] content (not clock ticks).
+  const relevant = (m: MutationRecord): boolean =>
+    m.type === 'attributes' || Array.from(m.addedNodes).some((n) => n instanceof HTMLElement && (n.matches('[data-reveal]') || !!n.querySelector('[data-reveal]')))
+  new MutationObserver((list) => { if (list.some(relevant)) soon(120, true) }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'open'] })
 }
 
 /** Pause CSS loops (marquee) while they are off screen. */

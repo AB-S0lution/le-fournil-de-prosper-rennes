@@ -21,7 +21,7 @@ export function render(): string {
       <div class="hero__cta"><a class="btn" href="${route('carte')}?cat=crepes">Voir les crêpes${icon('arrowRight')}</a></div></div>
   </div></section>
   <section class="section section--band"><div class="wrap">${sectionHead('Offre', '5 crêpes + 1 pot = 10 €', 'L’offre annoncée avec les confitures de la Maison Lucie. Les parfums en stock ne sont pas confirmés.')}
-    <div class="cols-2" style="align-items:center"><div class="grid-auto">${['crepe-maison', 'confiture-fraise'].map(shelfItem).join('')}</div>${photoFig(photo('confiture'), 'photo-tile photo-tile--43')}</div></div></section>
+    <div class="cols-2" style="align-items:center"><div class="shelf__grid">${['crepe-maison', 'confiture-fraise'].map(shelfItem).join('')}</div>${photoFig(photo('confiture'), 'photo-tile photo-tile--43')}</div></div></section>
   <section class="section"><div class="wrap">${sectionHead('Les prochains numéros', 'Brouillons d’exemple', 'Pour montrer comment la série pourrait continuer.')}
     <div class="grid-auto">${eps.map((e) => `<article class="card" data-reveal><p class="label">N°${e.n} ${mockTag('Brouillon')}</p><div style="margin-top:12px">${cardMedia(photoFor(e.ill), e.ill)}</div><h3 class="h3">${e.t}</h3><p class="muted" style="margin:8px 0 0">${e.d}</p></article>`).join('')}</div></div></section>`
 }

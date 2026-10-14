@@ -138,7 +138,7 @@ button, [role="button"], a, summary, label { touch-action: manipulation; }
 .skip-link { position: fixed; left: 12px; top: -80px; z-index: 200; background: var(--store); color: #fff; padding: 12px 18px; border-radius: var(--r-tag); transition: top 0.2s var(--ease-out); }
 .skip-link:focus { top: 12px; }
 .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
-.nb { white-space: nowrap; }
+.nb, a[href^="tel:"] { white-space: nowrap; }
 
 /* type */
 .display {
@@ -212,7 +212,7 @@ button, [role="button"], a, summary, label { touch-action: manipulation; }
 }
 .fascia.is-stuck { box-shadow: 0 10px 24px -16px rgba(34, 35, 47, 0.55); }
 .fascia__row { display: flex; align-items: center; gap: 18px; min-height: var(--header-h); }
-.wordmark { text-decoration: none; display: inline-flex; align-items: baseline; color: var(--band-ink); white-space: nowrap; }
+.wordmark { text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; color: var(--band-ink); white-space: nowrap; }
 .wordmark__script { font-family: var(--script); font-size: clamp(1.7rem, 1.4rem + 1vw, 2.3rem); line-height: 1; padding: 0.1em 0.1em 0.18em; }
 .wordmark__sub { font-family: var(--label); font-size: 0.75rem; letter-spacing: 0.34em; margin-left: 0.7em; display: none; }
 @media (min-width: 1700px) { .wordmark__sub { display: inline; } }
@@ -223,7 +223,10 @@ button, [role="button"], a, summary, label { touch-action: manipulation; }
 .mainnav a[aria-current="page"]::after { transform: scaleX(1); }
 @media (hover: hover) and (pointer: fine) { .mainnav a:hover::after { transform: scaleX(1); } }
 @media (min-width: 1280px) { .mainnav { display: block; } }
-.fascia__tools { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.fascia__tools { display: flex; align-items: center; gap: 8px; margin-left: auto; min-width: 0; }
+/* The live pill is the only header item allowed to shrink (ellipsis); nav, wordmark and buttons keep their size. */
+.fascia__row > .wordmark, .fascia__row > .mainnav, .fascia__tools > :not(.pill) { flex-shrink: 0; }
+.fascia .pill { min-width: 0; }
 @media (min-width: 1280px) { .fascia__tools { margin-left: 0; } }
 
 .pill {
@@ -337,6 +340,8 @@ main { display: block; }
 @media (min-width: 900px) { .page-hero__art { display: block; } }
 .medal { aspect-ratio: 1; border-radius: 50%; background: var(--band); display: grid; place-items: center; padding: 14%; position: relative; }
 .medal .art { width: 100%; height: auto; }
+/* % padding resolves against the parent width: in the stacked carnet detail it ate the whole 220 px disc. */
+.carnet__detail .medal { padding: 30px; width: 100%; }
 
 /* ---------- illustrations ---------- */
 .art { display: block; width: 100%; height: auto; overflow: visible; }
@@ -365,8 +370,8 @@ main { display: block; }
 .shelf-item__art { padding: 6% 10% 0; }
 .shelf-item__board { height: 10px; background: var(--pilier); border-radius: 3px; margin-top: -6px; position: relative; z-index: 0; opacity: 0.8; }
 .shelf-item__meta { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 8px; padding: 10px 4px 12px; text-align: left; }
-.shelf-item__name { min-width: 0; overflow-wrap: anywhere; font-family: var(--label); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; line-height: 1.25; }
-@media (max-width: 599px) { .shelf-item__meta { flex-wrap: wrap; } }
+.shelf-item__name { min-width: 0; overflow-wrap: break-word; font-family: var(--label); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; line-height: 1.25; }
+.shelf-item__meta { flex-wrap: wrap; }
 .price { font-variation-settings: "wdth" 75; font-weight: 800; font-size: 1.15rem; background: var(--store); color: #fff; padding: 0.12em 0.5em; border-radius: var(--r-tag); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .price--note { font-variation-settings: "wdth" 90; font-weight: 700; font-size: 0.8rem; }
 .price--ghost { background: transparent; color: var(--ink); border: 1px dashed var(--pilier); }
@@ -853,3 +858,14 @@ html.rm .pan-card { width: min(84vw, 460px); scroll-snap-align: center; }
 /* fail-safe: everything visible if a script error or stall happened */
 html.reveal-all [data-reveal] { opacity: 1 !important; transform: none !important; clip-path: none !important; }
 html.reveal-all [data-split] { visibility: visible !important; }
+
+/* Tablets: related articles side by side (not two full-width photos), odd last stat spans the row. */
+@media (min-width: 600px) and (max-width: 899px) {
+  .rel-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .rel-list > * + * { margin-top: 0; }
+  .stats-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+/* Phones: in the 2-column gallery the credit would cover a third of each photo, so it becomes a strip under the image. */
+@media (max-width: 599px) {
+  .photo-gal .photo-cap { position: static; display: block; max-width: none; border-radius: 0; padding: 6px 10px; font-size: 0.75rem; background: #22232f; }
+}

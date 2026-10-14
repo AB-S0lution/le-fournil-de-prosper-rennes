@@ -73,7 +73,7 @@ function footer(): string {
         <div class="tear__ctl"><button type="button" data-tear-prev>${icon('caretLeft')}Jour d’avant</button><button type="button" data-tear-next>Arracher la page${icon('caretRight')}</button></div></div>
       <div class="tear__info" data-tear-info aria-live="polite"></div>
     </section>
-    <div class="footer__bottom"><span>© Le Fournil de Prosper, site de démonstration. Illustrations originales, aucune photo du commerce.</span>
+    <div class="footer__bottom"><span>© Le Fournil de Prosper, site de démonstration. Illustrations originales et photos d’illustration (Unsplash), aucune photo du commerce.</span>
       <ul>${legal.map((p) => `<li><a href="${route(p.key)}">${esc(p.label)}</a></li>`).join('')}</ul></div>
   </div></footer>`
 }

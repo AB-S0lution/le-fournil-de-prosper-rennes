@@ -21,6 +21,6 @@ export function render(): string {
   </div></section>
   <section class="section section--band"><div class="wrap">${sectionHead('Astuces', 'Garder son pain, du lundi au dimanche', 'Conseils d’exemple, rédigés pour la démonstration.')}
     <div class="grid-auto">${tips.map(([t, d], i) => `<div class="card" data-reveal style="color:var(--ink)">${cardMedia(photo(tipPhotos[i]))}<h3 class="h3">${esc(t)}</h3><p class="muted" style="margin:8px 0 0">${esc(d)}</p></div>`).join('')}</div></div></section>
-  <section class="section"><div class="wrap">${sectionHead('Au comptoir', 'Pour finir la journée')}<div class="grid-auto" style="max-width:700px">${['baguette-tradition', 'pain-campagne'].map(shelfItem).join('')}</div>
+  <section class="section"><div class="wrap">${sectionHead('Au comptoir', 'Pour finir la journée')}<div class="shelf__grid" style="max-width:700px">${['baguette-tradition', 'pain-campagne'].map(shelfItem).join('')}</div>
     <div class="cols-2" style="margin-top:28px;align-items:center"><div style="max-width:200px">${art('loaf')}</div>${photoFig(photo('corbeille-pains'), 'photo-tile photo-tile--43')}</div></div></section>`
 }
